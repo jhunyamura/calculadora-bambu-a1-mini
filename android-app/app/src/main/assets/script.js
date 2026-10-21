@@ -123,6 +123,11 @@ function calcular() {
   resCustoTotal.textContent = formatBRL(custoOperacionalTotal);
   resLucroNominal.textContent = formatBRL(lucroNominal);
 
+  const bottomPrecoFinal = document.getElementById('bottomPrecoFinal');
+  if (bottomPrecoFinal) {
+    bottomPrecoFinal.textContent = formatBRL(precoVendaFinal);
+  }
+
   resFalhaPercentSub.textContent = `${pctFalha}% sobre custo base`;
   resMargemPercentSub.textContent = `Margem de ${pctLucro}%`;
 
@@ -338,16 +343,42 @@ if (btnShareQuote) {
   });
 }
 
-// Botões Copiar
-btnCopyQuote.addEventListener('click', () => {
-  navigator.clipboard.writeText(quoteText.textContent).then(() => {
-    showToast("Orçamento copiado com sucesso!");
+// Botão Copiar Proposta
+if (btnCopyQuote) {
+  btnCopyQuote.addEventListener('click', () => {
+    navigator.clipboard.writeText(quoteText.textContent).then(() => {
+      showToast("Proposta copiada com sucesso!");
+    });
   });
-});
+}
 
-btnCopyJava.addEventListener('click', () => {
-  navigator.clipboard.writeText(javaCodeBlock.textContent).then(() => {
-    showToast("Código Java copiado com sucesso!");
+// Botões da Barra Flutuante Inferior (Thumb Zone)
+const btnBottomShare = document.getElementById('btnBottomShare');
+const btnBottomCopy = document.getElementById('btnBottomCopy');
+
+if (btnBottomShare && btnShareQuote) {
+  btnBottomShare.addEventListener('click', () => btnShareQuote.click());
+}
+
+if (btnBottomCopy && btnCopyQuote) {
+  btnBottomCopy.addEventListener('click', () => btnCopyQuote.click());
+}
+
+// Navegação por Abas (Segmented Tab Bar)
+const tabBtns = document.querySelectorAll('.tab-btn');
+const tabContents = document.querySelectorAll('.tab-content');
+
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const targetId = btn.dataset.tab;
+    tabBtns.forEach(b => b.classList.remove('active'));
+    tabContents.forEach(c => c.classList.remove('active'));
+
+    btn.classList.add('active');
+    const targetContent = document.getElementById(targetId);
+    if (targetContent) {
+      targetContent.classList.add('active');
+    }
   });
 });
 

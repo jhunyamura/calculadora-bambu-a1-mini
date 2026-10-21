@@ -22,9 +22,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Customizar Status Bar para combinar com o tema Dark do Bambu Lab (#0d1117)
-        window.statusBarColor = Color.parseColor("#0d1117")
-        window.navigationBarColor = Color.parseColor("#0d1117")
+        // Customizar Status Bar para combinar com o tema OLED Dark do Bambu Lab (#080b0f)
+        window.statusBarColor = Color.parseColor("#080b0f")
+        window.navigationBarColor = Color.parseColor("#080b0f")
 
         webView = WebView(this)
         setContentView(webView)
@@ -55,11 +55,16 @@ class MainActivity : AppCompatActivity() {
         settings.databaseEnabled = true
         settings.allowFileAccess = true
         settings.allowContentAccess = true
-        settings.useWideViewPort = true
-        settings.loadWithOverviewMode = true
+        settings.useWideViewPort = false
+        settings.loadWithOverviewMode = false
+        settings.textZoom = 100
+        settings.setSupportZoom(false)
+        settings.builtInZoomControls = false
+        settings.displayZoomControls = false
         settings.cacheMode = WebSettings.LOAD_DEFAULT
 
-        webView.setBackgroundColor(Color.parseColor("#0d1117"))
+        webView.setBackgroundColor(Color.parseColor("#080b0f"))
+        webView.overScrollMode = View.OVER_SCROLL_NEVER
         webView.isVerticalScrollBarEnabled = false
         webView.isHorizontalScrollBarEnabled = false
 
