@@ -1,6 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 
 const PORT = 8080;
 const MIME_TYPES = {
@@ -14,6 +15,18 @@ const MIME_TYPES = {
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon'
 };
+
+function getLocalIP() {
+  const interfaces = os.networkInterfaces();
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name]) {
+      if (iface.family === 'IPv4' && !iface.internal) {
+        return iface.address;
+      }
+    }
+  }
+  return 'localhost';
+}
 
 const server = http.createServer((req, res) => {
   let reqUrl = req.url.split('?')[0];
@@ -43,7 +56,8 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, '0.0.0.0', () => {
+  const localIP = getLocalIP();
   console.log(`Servidor Bambu Lab A1 Mini rodando!`);
   console.log(`Acesse no Computador: http://localhost:${PORT}`);
-  console.log(`Acesse no Celular Android: http://192.168.100.10:${PORT}`);
+  console.log(`Acesse no Celular Android: http://${localIP}:${PORT}`);
 });
