@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Calculadora de Impressão 3D | Bambu Lab A1 Mini</title>
+  <meta name="description" content="Calculadora de custos e precificação profissional de impressão 3D para Bambu Lab A1 Mini.">
+  
+  <!-- Configurações PWA e Android Nativo -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d1117">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Calc 3D Bambu">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-area">
+        <div class="bambu-badge">
+          <span class="badge-dot"></span>
+          <span>BAMBU LAB A1 MINI • ANDROID APP</span>
+        </div>
+        <h1>Calculadora de Precificação 3D</h1>
+        <p class="subtitle">Precificação técnica, sustentável e profissional para projetos de manufatura aditiva.</p>
+      </div>
+      <div class="header-actions">
+        <button id="btnInstallApp" class="btn-install" style="display: none;" title="Instalar aplicativo no Android">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="3" ry="3"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          Instalar no Celular
+        </button>
+        <button id="btnReset" class="btn-secondary" title="Redefinir para valores de exemplo">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Restaurar Exemplo
+        </button>
+      </div>
+    </header>
+
+    <div class="main-layout">
+      <!-- Input Panel -->
+      <section class="panel input-panel">
+        <div class="panel-header">
+          <h2>Parâmetros do Fatiador & Custos</h2>
+          <span class="tag">Bambu Studio</span>
+        </div>
+
+        <form id="calcForm" onsubmit="event.preventDefault();">
+          <!-- Bloco Fatiador -->
+          <div class="form-section">
+            <h3 class="section-title">
+              <span class="icon">⚡</span> Dados do Fatiamento (Bambu Studio)
+            </h3>
+            
+            <div class="input-grid">
+              <div class="input-group">
+                <label for="pesoFilamento">
+                  Peso Consumido
+                  <span class="tooltip" title="Peso total informado pelo Bambu Studio incluindo suportes/brim">?</span>
+                </label>
+                <div class="input-wrapper">
+                  <input type="number" id="pesoFilamento" step="0.01" min="0" value="73.45" required>
+                  <span class="unit">gramas (g)</span>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label>
+                  Tempo de Impressão
+                  <span class="tooltip" title="Horas e minutos estimados no fatiador">?</span>
+                </label>
+                <div class="time-inputs">
+                  <div class="input-wrapper">
+                    <input type="number" id="tempoHoras" min="0" value="3" required>
+                    <span class="unit">h</span>
+                  </div>
+                  <div class="input-wrapper">
+                    <input type="number" id="tempoMinutos" min="0" max="59" value="12" required>
+                    <span class="unit">min</span>
+                  </div>
+                </div>
+                <small class="helper-text" id="tempoTotalHorasLabel">Equivale a 3.20 horas</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bloco Filamento & Energia -->
+          <div class="form-section">
+            <h3 class="section-title">
+              <span class="icon">🧵</span> Custos de Insumos & Energia
+            </h3>
+
+            <div class="input-grid">
+              <div class="input-group">
+                <label for="precoCarretel">Preço do Rolo de Filamento (1kg)</label>
+                <div class="input-wrapper">
+                  <span class="currency-prefix">R$</span>
+                  <input type="number" id="precoCarretel" step="0.50" min="0" value="120.00">
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label for="tarifaEnergia">Tarifa de Energia Elétrica</label>
+                <div class="input-wrapper">
+                  <span class="currency-prefix">R$</span>
+                  <input type="number" id="tarifaEnergia" step="0.01" min="0" value="1.00">
+                  <span class="unit">/kWh</span>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label for="potenciaWatts">
+                  Consumo Médio A1 Mini
+                  <span class="tooltip" title="Consumo médio da A1 Mini em PLA é em torno de 75W">?</span>
+                </label>
+                <div class="input-wrapper">
+                  <input type="number" id="potenciaWatts" step="5" min="10" value="75">
+                  <span class="unit">Watts (W)</span>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label for="tempoTrabalhoMinutos">Mão de Obra Dedicada</label>
+                <div class="input-wrapper">
+                  <input type="number" id="tempoTrabalhoMinutos" min="0" value="15">
+                  <span class="unit">minutos</span>
+                </div>
+                <small class="helper-text">Preparo da mesa, fatiamento e pós-processamento</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bloco Máquina & Mão de Obra -->
+          <div class="form-section">
+            <h3 class="section-title">
+              <span class="icon">⚙️</span> Depreciação & Hora Técnica
+            </h3>
+
+            <div class="input-grid">
+              <div class="input-group">
+                <label for="valorImpressora">Valor da Impressora A1 Mini</label>
+                <div class="input-wrapper">
+                  <span class="currency-prefix">R$</span>
+                  <input type="number" id="valorImpressora" step="50" min="0" value="3500.00">
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label for="vidaUtilHoras">Vida Útil Estimada</label>
+                <div class="input-wrapper">
+                  <input type="number" id="vidaUtilHoras" step="500" min="100" value="5000">
+                  <span class="unit">horas</span>
+                </div>
+                <small class="helper-text" id="custoHoraMaquinaLabel">Depreciação: R$ 0,70/hora</small>
+              </div>
+
+              <div class="input-group full-width">
+                <label for="valorHoraTrabalho">Valor da Sua Hora de Trabalho</label>
+                <div class="input-wrapper">
+                  <span class="currency-prefix">R$</span>
+                  <input type="number" id="valorHoraTrabalho" step="1" min="0" value="30.00">
+                  <span class="unit">/hora</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bloco Comercial: Falhas e Lucro -->
+          <div class="form-section">
+            <h3 class="section-title">
+              <span class="icon">📈</span> Parâmetros Comerciais
+            </h3>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <label for="taxaFalha">Taxa de Risco / Falha e Perdas</label>
+                <span class="slider-value" id="taxaFalhaVal">15%</span>
+              </div>
+              <input type="range" id="taxaFalha" min="0" max="40" step="1" value="15">
+              <small class="helper-text">Cobre falhas eventuais, suportes, purgas do bico e descarte.</small>
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <label for="margemLucro">Margem de Lucro Desejada</label>
+                <span class="slider-value highlight" id="margemLucroVal">100%</span>
+              </div>
+              <input type="range" id="margemLucro" min="0" max="300" step="5" value="100">
+              <small class="helper-text">100% = dobra o custo operacional (comum para colecionáveis/peças decorativas).</small>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- Output / Results Panel -->
+      <section class="panel result-panel">
+        <div class="panel-header">
+          <h2>Resumo Financeiro</h2>
+          <span class="tag live-tag">Tempo Real</span>
+        </div>
+
+        <!-- Big Price Hero Card -->
+        <div class="price-hero-card">
+          <div class="price-label">Preço de Venda Sugerido</div>
+          <div class="price-amount" id="resPrecoFinal">R$ 43,20</div>
+          <div class="price-subtext">
+            Retorno líquido previsto: <strong id="resLucroReais">R$ 21,60</strong>
+          </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-title">Custo Base de Produção</span>
+            <span class="kpi-value" id="resCustoBase">R$ 18,79</span>
+            <span class="kpi-sub">Materiais + Máquina + Operação</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">Reserva p/ Falhas</span>
+            <span class="kpi-value" id="resValorFalha">R$ 2,81</span>
+            <span class="kpi-sub" id="resFalhaPercentSub">15% do custo base</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">Custo Operacional Total</span>
+            <span class="kpi-value" id="resCustoTotal">R$ 21,60</span>
+            <span class="kpi-sub">Ponto de Equilíbrio (Break-even)</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">Lucro Líquido Real</span>
+            <span class="kpi-value text-accent" id="resLucroNominal">R$ 21,60</span>
+            <span class="kpi-sub" id="resMargemPercentSub">Margem de 100%</span>
+          </div>
+        </div>
+
+        <!-- Detalhamento de Custos da Peça -->
+        <div class="breakdown-card">
+          <h3 class="breakdown-title">Detalhamento dos Custos</h3>
+          
+          <div class="breakdown-bars" id="breakdownBars">
+            <!-- Barra visual proporcional -->
+            <div class="bar-segment bar-material" id="barMaterial" title="Filamento"></div>
+            <div class="bar-segment bar-energia" id="barEnergia" title="Energia"></div>
+            <div class="bar-segment bar-maquina" id="barMaquina" title="Depreciação"></div>
+            <div class="bar-segment bar-trabalho" id="barTrabalho" title="Mão de Obra"></div>
+          </div>
+
+          <div class="breakdown-list">
+            <div class="breakdown-item">
+              <div class="item-info">
+                <span class="dot dot-material"></span>
+                <span>Filamento (<span id="resPesoGrams">73.45</span>g a R$<span id="resPrecoKg">120</span>/kg)</span>
+              </div>
+              <span class="item-value" id="resCustoMaterial">R$ 8,81</span>
+            </div>
+
+            <div class="breakdown-item">
+              <div class="item-info">
+                <span class="dot dot-energia"></span>
+                <span>Energia Elétrica (<span id="resPotenciaW">75</span>W / <span id="resTempoH">3.20</span>h)</span>
+              </div>
+              <span class="item-value" id="resCustoEnergia">R$ 0,24</span>
+            </div>
+
+            <div class="breakdown-item">
+              <div class="item-info">
+                <span class="dot dot-maquina"></span>
+                <span>Depreciação da A1 Mini (<span id="resTaxaDeprec">R$ 0,70</span>/h)</span>
+              </div>
+              <span class="item-value" id="resCustoDepreciacao">R$ 2,24</span>
+            </div>
+
+            <div class="breakdown-item">
+              <div class="item-info">
+                <span class="dot dot-trabalho"></span>
+                <span>Mão de Obra (<span id="resTempoMaoObraMin">15</span>min dedicados)</span>
+              </div>
+              <span class="item-value" id="resCustoTrabalho">R$ 7,50</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Orçamento Rápido / Copiar Texto -->
+        <div class="quote-card">
+          <div class="quote-header">
+            <h4>Texto p/ Orçamento ao Cliente</h4>
+            <div class="quote-actions">
+              <button id="btnShareQuote" class="btn-share" title="Compartilhar no WhatsApp ou outros apps">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                WhatsApp / Compartilhar
+              </button>
+              <button id="btnCopyQuote" class="btn-copy">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copiar
+              </button>
+            </div>
+          </div>
+          <div class="quote-text" id="quoteText">
+            Carregando orçamento...
+          </div>
+        </div>
+
+        <!-- Snippet Backend Java -->
+        <div class="java-snippet-card">
+          <div class="snippet-header">
+            <div class="snippet-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              Código Backend em Java (Classe Pronta)
+            </div>
+            <button id="btnCopyJava" class="btn-copy">Copiar Java</button>
+          </div>
+          <p class="snippet-desc">Estruture sua lógica no seu backend com este código limpo:</p>
+          <pre><code id="javaCodeBlock"></code></pre>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Texto copiado para a área de transferência!</div>
+
+  <script src="script.js"></script>
+</body>
+</html>

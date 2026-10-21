@@ -1,0 +1,33 @@
+{
+  "name": "Calculadora 3D | Bambu A1 Mini",
+  "short_name": "Calc 3D Bambu",
+  "description": "Calculadora técnica e profissional de custos e precificação de impressão 3D para Bambu Lab A1 Mini.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0d1117",
+  "theme_color": "#00ae42",
+  "categories": ["utilities", "business", "productivity"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Novo Orçamento",
+      "url": "./index.html",
+      "description": "Calcular custos e preço de venda para nova peça 3D"
+    }
+  ]
+}
